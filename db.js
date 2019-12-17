@@ -1,7 +1,7 @@
 import * as SQLite from "expo-sqlite";
 
 export const VERSION = "1.1.0"; // APP VERSION
-const db = SQLite.openDatabase("maker.db", VERSION);
+const db = SQLite.openDatabase("todos.db", VERSION);
 
 export const initDatabase = callback => {
   db.transaction(

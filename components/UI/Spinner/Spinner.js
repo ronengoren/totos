@@ -2,7 +2,7 @@ import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import { activity } from "../../../shared/styles";
 
-// import { connect } from "react-redux";
+import { connect } from "react-redux";
 
 const spinner = props => (
   <View style={activity}>
@@ -13,9 +13,8 @@ const spinner = props => (
   </View>
 );
 
-// const mapStateToProps = state => {
-//   return { theme: state.theme.theme };
-// };
+const mapStateToProps = state => {
+  return { theme: state.theme.theme };
+};
 
-// export default connect(mapStateToProps)(spinner);
-export default spinner;
+export default connect(mapStateToProps)(spinner);

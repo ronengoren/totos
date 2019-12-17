@@ -1,4 +1,6 @@
-import { AppLoading } from "expo";
+import React, { Component } from "react";
+import { ActivityIndicator, NativeModules, View } from "react-native";
+
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import { getTheme, ThemeContext } from "react-native-material-ui";
 import { activity } from "./shared/styles";
@@ -13,21 +15,53 @@ import profileReducer from "./store/reducers/profile";
 import settingsReducer from "./store/reducers/settings";
 import { initDatabase, initTheme } from "./db";
 
-import { Asset } from "expo-asset";
-import * as Font from "expo-font";
-import React, { Component } from "react";
-import { ActivityIndicator, NativeModules, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+const UIManager = NativeModules.UIManager;
+
+const rootReducer = combineReducers({
+  tasks: tasksReducer,
+  lists: listsReducer,
+  categories: cateReducer,
+  theme: themeReducer,
+  profile: profileReducer,
+  settings: settingsReducer
+});
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 class App extends Component {
   state = {
     uiTheme: false,
     ready: false
   };
+
+  componentDidMount() {
+    initDatabase(() => {
+      initTheme(state => {
+        this.setState(state);
+      });
+    });
+  }
+
+  omponentWillMount() {
+    if (UIManager.setLayoutAnimationEnabledExperimental) {
+      UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+  }
+
   render() {
     const { uiTheme, ready } = this.state;
 
-    return <Router />;
+    return ready ? (
+      <Provider store={store}>
+        <ThemeContext.Provider value={getTheme(uiTheme)}>
+          <Router />
+        </ThemeContext.Provider>
+      </Provider>
+    ) : (
+      <View style={activity}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
   }
 }
+
 export default App;

@@ -15,7 +15,17 @@ import About from "./components/About/About";
 
 const MainNavigator = createStackNavigator(
   {
-    ToDo: { screen: ToDo }
+    ToDo: { screen: ToDo },
+    ConfigTask: { screen: ConfigTask },
+    QuicklyTaskList: { screen: QuicklyTaskList },
+    CategoriesList: { screen: CategoriesList },
+    Profile: { screen: Profile },
+    Drawer: { screen: Drawer },
+    Themes: { screen: Themes },
+    Theme: { screen: Theme },
+    Settings: { screen: Settings },
+    Backups: { screen: Backups },
+    About: { screen: About }
   },
   {
     initialRouteName: "ToDo",
