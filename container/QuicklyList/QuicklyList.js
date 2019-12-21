@@ -194,7 +194,7 @@ class QuicklyList extends Component {
         )}
 
         <View style={{ marginBottom: -40 }}>
-          <ActionButton
+          {/* <ActionButton
             hidden={bottomHidden}
             onPress={() =>
               navigation.navigate("QuicklyTaskList", { list: false })
@@ -204,7 +204,7 @@ class QuicklyList extends Component {
               container: { backgroundColor: theme.actionButtonColor },
               icon: { color: theme.actionButtonIconColor }
             }}
-          />
+          /> */}
         </View>
       </View>
     );

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, UseState } from "react";
 import { ActivityIndicator, NativeModules, View } from "react-native";
 
 import { applyMiddleware, combineReducers, createStore } from "redux";
@@ -14,6 +14,7 @@ import themeReducer from "./store/reducers/theme";
 import profileReducer from "./store/reducers/profile";
 import settingsReducer from "./store/reducers/settings";
 import { initDatabase, initTheme } from "./db";
+import * as Font from "expo-font";
 
 const UIManager = NativeModules.UIManager;
 
@@ -39,6 +40,14 @@ class App extends Component {
         this.setState(state);
       });
     });
+    Font.loadAsync({
+      "roboto-bold": require("./assets/fonts/Roboto-Bold.ttf"),
+      "roboto-italic": require("./assets/fonts/Roboto-Italic.ttf"),
+      "roboto-regular": require("./assets/fonts/Roboto-Regular.ttf"),
+      Roboto: {
+        uri: require("./assets/fonts/Roboto-Regular.ttf")
+      }
+    });
   }
 
   omponentWillMount() {
@@ -49,7 +58,6 @@ class App extends Component {
 
   render() {
     const { uiTheme, ready } = this.state;
-
     return ready ? (
       <Provider store={store}>
         <ThemeContext.Provider value={getTheme(uiTheme)}>
