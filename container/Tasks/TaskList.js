@@ -592,7 +592,7 @@ class TaskList extends Component {
                     }
                 </ScrollView>
 
-                <View>
+                {/* <View>
                     {selectedCategory !== translations.finished ?
                         <ActionButton
                             hidden={bottomHidden}
@@ -614,7 +614,7 @@ class TaskList extends Component {
                                 icon="delete-sweep"
                             /> : null
                     }
-                </View>
+                </View> */}
                 <BottomNavigation
                     style={{container: {backgroundColor: theme.bottomNavigationColor}}}
                     hidden={bottomHidden}
