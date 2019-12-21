@@ -7,7 +7,7 @@ class AnimatedView extends Component {
     moveAnim: new Animated.Value(50)
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.fadeOpacity();
   }
 
