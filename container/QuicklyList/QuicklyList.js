@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View, Button } from "react-native";
 import {
   ActionButton,
   IconToggle,
@@ -193,8 +193,9 @@ class QuicklyList extends Component {
           <Spinner />
         )}
 
-        <View style={{ marginBottom: -40 }}>
-          {/* <ActionButton
+        <View style={{ marginBottom: 40 }}>
+          <Button
+            title="Add"
             hidden={bottomHidden}
             onPress={() =>
               navigation.navigate("QuicklyTaskList", { list: false })
@@ -204,7 +205,7 @@ class QuicklyList extends Component {
               container: { backgroundColor: theme.actionButtonColor },
               icon: { color: theme.actionButtonIconColor }
             }}
-          /> */}
+          />
         </View>
       </View>
     );

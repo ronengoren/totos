@@ -15,7 +15,7 @@ import profileReducer from "./store/reducers/profile";
 import settingsReducer from "./store/reducers/settings";
 import { initDatabase, initTheme } from "./db";
 import * as Font from "expo-font";
-
+import Fire from "./Fire";
 const UIManager = NativeModules.UIManager;
 
 const rootReducer = combineReducers({
@@ -50,7 +50,7 @@ class App extends Component {
     });
   }
 
-  omponentWillMount() {
+  UNSAFE_componentWillMount() {
     if (UIManager.setLayoutAnimationEnabledExperimental) {
       UIManager.setLayoutAnimationEnabledExperimental(true);
     }

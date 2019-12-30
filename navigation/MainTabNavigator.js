@@ -20,6 +20,35 @@ import Settings from "../container/Settings/Settings";
 import Backups from "../container/Backup/Backup";
 import About from "../components/About/About";
 
+const navigator = createBottomTabNavigator(
+  {
+    // The name `Feed` is used later for accessing screens
+    Feed: {
+      // Define the component we will use for the Feed screen.
+      screen: FeedScreen,
+      navigationOptions: {
+        // Add a cool Material Icon for this screen
+        tabBarIcon: tabBarIcon("home")
+      }
+    },
+    // All the same stuff but for the Photo screen
+    Photo: {
+      screen: SelectPhotoScreen,
+      navigationOptions: {
+        tabBarIcon: tabBarIcon("add-circle")
+      }
+    }
+  },
+  {
+    // We want to hide the labels and set a nice 2-tone tint system for our tabs
+    tabBarOptions: {
+      showLabel: false,
+      activeTintColor: "black",
+      inactiveTintColor: "gray"
+    }
+  }
+);
+
 const HomeStack = createStackNavigator(
   {
     ToDo: { screen: ToDo }

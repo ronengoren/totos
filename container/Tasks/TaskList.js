@@ -7,12 +7,14 @@ import {
   StyleSheet,
   Text,
   TouchableHighlight,
-  View
+  View,
+  LayoutAnimation,
+  RefreshControl
 } from "react-native";
 import {
   ActionButton,
-  BottomNavigation,
   Button,
+  BottomNavigation,
   Icon,
   IconToggle,
   ListItem,
@@ -29,12 +31,19 @@ import moment from "moment";
 
 import { connect } from "react-redux";
 import * as actions from "../../store/actions";
-
+import firebase from "firebase";
+import Fire from "../../Fire";
+import ListFeed from "../List/ListFeed";
 const UP = 1;
 const DOWN = -1;
+const PAGE_SIZE = 5;
 
 class TaskList extends Component {
   state = {
+    loading: false,
+    posts: [],
+    data: {},
+
     priorityColors: {
       none: {
         bgColor: this.props.theme.noneColor,
@@ -78,8 +87,18 @@ class TaskList extends Component {
       this.divisionTask();
       this.renderDropdownData();
     });
+    if (Fire.shared.uid) {
+      // If we are, then we can get the first 5 posts
+      this.makeRemoteRequest();
+    } else {
+      // If we aren't then we should just start observing changes. This will be called when the user signs in
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          this.makeRemoteRequest();
+        }
+      });
+    }
   }
-
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.theme !== this.props.theme) {
       this.refreshPriorityColors();
@@ -101,6 +120,43 @@ class TaskList extends Component {
       this.divisionTask();
     }
   }
+  addPosts = posts => {
+    this.setState(previousState => {
+      let data = {
+        ...previousState.data,
+        ...posts
+      };
+      return {
+        data,
+        // Sort the data by timestamp
+        posts: Object.values(data).sort((a, b) => a.timestamp < b.timestamp)
+      };
+    });
+  };
+  makeRemoteRequest = async lastKey => {
+    // If we are currently getting posts, then bail out..
+    if (this.state.loading) {
+      return;
+    }
+    this.setState({ loading: true });
+
+    // The data prop will be an array of posts, the cursor will be used for pagination.
+    const { data, cursor } = await Fire.shared.getPaged({
+      size: PAGE_SIZE,
+      start: lastKey
+    });
+
+    this.lastKnownKey = cursor;
+    // Iteratively add posts
+    let posts = {};
+    for (let child of data) {
+      posts[child.key] = child;
+    }
+    this.addPosts(posts);
+
+    // Finish loading, this will stop the refreshing animation.
+    this.setState({ loading: false });
+  };
 
   onScroll = e => {
     const currentOffset = e.nativeEvent.contentOffset.y;
@@ -497,6 +553,9 @@ class TaskList extends Component {
     );
   }
 
+  _onRefresh = () => this.makeRemoteRequest();
+  onPressFooter = () => this.makeRemoteRequest(this.lastKnownKey);
+
   render() {
     const {
       division,
@@ -520,7 +579,6 @@ class TaskList extends Component {
       finished,
       translations
     } = this.props;
-
     const taskList =
       initDivision &&
       Object.keys(division).map(div =>
@@ -540,7 +598,18 @@ class TaskList extends Component {
 
           return (
             <View key={div + index}>
-              <AnimatedView value={1} duration={500}>
+              <ListFeed
+                refreshControl={
+                  <RefreshControl
+                    refreshing={this.state.loading}
+                    onRefresh={this._onRefresh}
+                  />
+                }
+                onPressFooter={this.onPressFooter}
+                data={this.state.posts}
+              />
+              {/* tasks list */}
+              {/* <AnimatedView value={1} duration={500}>
                 {!index && (
                   <Subheader
                     text={div}
@@ -640,7 +709,7 @@ class TaskList extends Component {
                     }}
                   />
                 </View>
-              </AnimatedView>
+              </AnimatedView> */}
             </View>
           );
         })
@@ -700,7 +769,6 @@ class TaskList extends Component {
             </ModalDropdown>
           }
         />
-
         {showConfigCategory && (
           <ConfigCategory
             category={false}
@@ -716,7 +784,6 @@ class TaskList extends Component {
             buttons={dialog.buttons}
           />
         )}
-
         <ScrollView
           keyboardShouldPersistTaps="always"
           keyboardDismissMode="interactive"
@@ -731,7 +798,6 @@ class TaskList extends Component {
             </Text>
           )}
         </ScrollView>
-
         <View>
           {selectedCategory !== translations.finished ? (
             <Button
@@ -749,8 +815,7 @@ class TaskList extends Component {
               }}
             />
           ) : finished.length ? (
-            <Button
-              text=""
+            <ActionButton
               hidden={bottomHidden}
               style={{
                 container: { backgroundColor: theme.actionButtonColor },
@@ -761,38 +826,6 @@ class TaskList extends Component {
             />
           ) : null}
         </View>
-        <BottomNavigation
-          style={{
-            container: { backgroundColor: theme.bottomNavigationColor }
-          }}
-          hidden={bottomHidden}
-          active={sorting}
-        >
-          <BottomNavigation.Action
-            key="byAZ"
-            icon="format-line-spacing"
-            label={sortingType === "ASC" ? "A-Z" : "Z-A"}
-            onPress={() => this.setSortingType("byAZ")}
-          />
-          <BottomNavigation.Action
-            key="byDate"
-            icon="insert-invitation"
-            label={translations.date}
-            onPress={() => this.setSortingType("byDate")}
-          />
-          <BottomNavigation.Action
-            key="byCategory"
-            icon="bookmark-border"
-            label={translations.category}
-            onPress={() => this.setSortingType("byCategory")}
-          />
-          <BottomNavigation.Action
-            key="byPriority"
-            icon="priority-high"
-            label={translations.priority}
-            onPress={() => this.setSortingType("byPriority")}
-          />
-        </BottomNavigation>
       </View>
     );
   }
