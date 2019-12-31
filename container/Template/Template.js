@@ -48,8 +48,12 @@ class Template extends Component {
           <ThemeContext.Provider value={getTheme(uiTheme)}>
             <View
               style={{
-                height: Platform.OS === "ios" ? 20 : StatusBar.currentHeight,
-                backgroundColor: "#af3f1f"
+                height:
+                  Platform.OS === "ios"
+                    ? 0
+                    : // StatusBar.currentHeight
+                      0,
+                backgroundColor: "#40c9a2"
               }}
             >
               <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" translucent />

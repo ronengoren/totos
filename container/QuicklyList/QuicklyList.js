@@ -1,5 +1,18 @@
 import React, { Component } from "react";
-import { ScrollView, StyleSheet, Text, View, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Platform,
+  Navigator,
+  TouchableOpacity,
+  Alert,
+  Animated,
+  Image,
+  BackAndroid,
+  ScrollView
+} from "react-native";
 import {
   ActionButton,
   IconToggle,
@@ -14,10 +27,25 @@ import Spinner from "../../components/UI/Spinner/Spinner";
 
 import { connect } from "react-redux";
 import * as actions from "../../store/actions";
+import ActionSheet from "react-native-actionsheet";
+import GlobalStyles from "../../components/global/GlobalStyles";
 
 const UP = 1;
 const DOWN = -1;
+const global = require("../../components/global/GlobalFunctions");
 
+const IS_ANDROID = Platform.OS === "android";
+const NAVBAR_HEIGHT = IS_ANDROID ? 54 : 64; // TODO: check the android tabbar height
+const PAGE_HEIGHT = Dimensions.get("window").height - NAVBAR_HEIGHT;
+const PAGE_WIDTH = Dimensions.get("window").width;
+const NAVBAR_SELECTOR_WIDTH = PAGE_WIDTH * 0.2;
+const NAVBAR_SELECTOR_HEIGHT = 2;
+// const HEADER_TITLE_LEFT_MARGIN =
+//   Platform.OS === "ios"
+//     ? 0
+//     : Navigator.NavigationBar.Styles.Stages.Left.Title.marginLeft || 0;
+// const SAVE_BUTTON_STATE = global.saveButtonStates();
+const NAVIGATOR_BACKHANDLER = "NAVIGATOR_BACKHANDLER";
 class QuicklyList extends Component {
   state = {
     dialog: {},
@@ -112,7 +140,7 @@ class QuicklyList extends Component {
         <View key={index}>
           <AnimatedView value={1} duration={500}>
             <View style={{ marginLeft: 10, marginRight: 10, marginBottom: 10 }}>
-              <ListItem
+              {/* <ListItem
                 divider
                 dense
                 onPress={() =>
@@ -124,7 +152,7 @@ class QuicklyList extends Component {
                     { backgroundColor: theme.noneColor }
                   ],
                   primaryText: {
-                    fontSize: 18,
+                    fontSize: 48,
                     color: theme.textColor
                   }
                 }}
@@ -144,7 +172,7 @@ class QuicklyList extends Component {
                     amounts[list.id]
                   }`
                 }}
-              />
+              /> */}
             </View>
           </AnimatedView>
         </View>
@@ -194,7 +222,7 @@ class QuicklyList extends Component {
         )}
 
         <View style={{ marginBottom: 40 }}>
-          <Button
+          {/* <Button
             title="Add"
             hidden={bottomHidden}
             onPress={() =>
@@ -205,7 +233,7 @@ class QuicklyList extends Component {
               container: { backgroundColor: theme.actionButtonColor },
               icon: { color: theme.actionButtonIconColor }
             }}
-          />
+          /> */}
         </View>
       </View>
     );
@@ -227,6 +255,59 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center"
+  },
+  avatarPhoto: {
+    height: 38,
+    width: 38,
+    borderRadius: 19
+  },
+  navigationBarContainer: {
+    backgroundColor: "white"
+  },
+  navigationBarTitleContainer: {
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  navigationBarTitleText: {
+    marginLeft: 12,
+    fontSize: 16,
+    color: "#474747",
+    fontFamily: "Avenir Next"
+  },
+  coverView: {
+    zIndex: 100
+  },
+  buttonArea: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: NAVBAR_SELECTOR_WIDTH
+  },
+  androidCenterButton: {
+    alignSelf: "center",
+    justifyContent: "center"
+    // marginRight: HEADER_TITLE_LEFT_MARGIN
+  },
+  navBarIcon: {
+    height: 20,
+    resizeMode: "contain"
+  },
+  convoNavBarContainer: {
+    alignItems: "center",
+    padding: 13
+  },
+  convoNavBarIcon: {
+    height: 18,
+    width: 25,
+    resizeMode: "contain"
+  },
+  navBarSelector: {
+    position: "absolute",
+    bottom: 0,
+    width: NAVBAR_SELECTOR_WIDTH,
+    backgroundColor: "black",
+    height: NAVBAR_SELECTOR_HEIGHT,
+    resizeMode: "cover"
   }
 });
 

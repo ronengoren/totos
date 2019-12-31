@@ -18,7 +18,7 @@ import tabBarIcon from "./utils/tabBarIcon";
 import SelectPhotoScreen from "./screens/SelectPhotoScreen";
 import FeedScreen from "./screens/FeedScreen";
 import NewPostScreen from "./screens/NewPostScreen";
-
+import CreatLoginPage from "./container/Login/CreateProfilePage";
 const navigator = createBottomTabNavigator(
   {
     // The name `Feed` is used later for accessing screens
@@ -51,8 +51,8 @@ const navigator = createBottomTabNavigator(
 const MainNavigator = createStackNavigator(
   {
     Main: {
-      screen: navigator
-      // , navigationOptions: { title: "2023" }
+      screen: navigator,
+      navigationOptions: { title: "2023" }
     },
     NewPost: NewPostScreen,
 
@@ -64,13 +64,13 @@ const MainNavigator = createStackNavigator(
     Themes: { screen: Themes },
     Theme: { screen: Theme },
     Settings: { screen: Settings },
-    Backups: { screen: Backups },
+    Backups: { screen: CreatLoginPage },
     About: { screen: About }
   },
   {
     // cardStyle: { backgroundColor: "white" },
-    initialRouteName: "Main",
-    headerMode: "none"
+    initialRouteName: "Main"
+    // headerMode: "none"
   }
 );
 

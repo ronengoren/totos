@@ -595,19 +595,10 @@ class TaskList extends Component {
               }
             }
           }
+          LayoutAnimation.easeInEaseOut();
 
           return (
             <View key={div + index}>
-              <ListFeed
-                refreshControl={
-                  <RefreshControl
-                    refreshing={this.state.loading}
-                    onRefresh={this._onRefresh}
-                  />
-                }
-                onPressFooter={this.onPressFooter}
-                data={this.state.posts}
-              />
               {/* tasks list */}
               {/* <AnimatedView value={1} duration={500}>
                 {!index && (
@@ -791,14 +782,14 @@ class TaskList extends Component {
           style={fullWidth}
         >
           {tasks && tasks.length ? (
-            <View style={{ paddingBottom: 20 }}>{taskList}</View>
+            <View style={{ paddingBottom: 0 }}>{taskList}</View>
           ) : (
             <Text style={[empty, { color: theme.textColor }]}>
               {translations.emptyList}
             </Text>
           )}
         </ScrollView>
-        <View>
+        {/* <View>
           {selectedCategory !== translations.finished ? (
             <Button
               text=""
@@ -825,7 +816,17 @@ class TaskList extends Component {
               icon="delete-sweep"
             />
           ) : null}
-        </View>
+        </View> */}
+        <ListFeed
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.loading}
+              onRefresh={this._onRefresh}
+            />
+          }
+          onPressFooter={this.onPressFooter}
+          data={this.state.posts}
+        />
       </View>
     );
   }
